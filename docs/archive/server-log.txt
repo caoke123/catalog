@@ -1,0 +1,28 @@
+
+> yutu-catalog@0.1.0 dev E:\缃戠珯寮€鍙慭E-Catalog\yutu-catalog
+> next dev -p 3010 "-p" "3010"
+
+鈻?Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3010
+- Network:       http://192.168.31.225:3010
+- Environments: .env.local
+鉁?Ready in 813ms
+
+[getCatalog] fetching: https://yutu.nv315.top/catalogs/6e230750-b707-4946-8a40-df642317f3f3.json
+[getCatalog] fetching: https://yutu.nv315.top/catalogs/6e230750-b707-4946-8a40-df642317f3f3.json
+[getCatalog] status: 200 true
+[getCatalog] status: 200 true
+[getCatalog] success, products: 5
+[getCatalog] success, products: 5
+[getCatalog] fetching: https://yutu.nv315.top/catalogs/6e230750-b707-4946-8a40-df642317f3f3.json
+[getCatalog] status: 200 true
+[getCatalog] success, products: 5
+[getCatalog] fetching: https://yutu.nv315.top/catalogs/6e230750-b707-4946-8a40-df642317f3f3.json
+[getCatalog] status: 200 true
+[getCatalog] success, products: 5
+ GET /c/6e230750-b707-4946-8a40-df642317f3f3 200 in 1860ms (next.js: 1403ms, application-code: 456ms)
+ GET /c/6e230750-b707-4946-8a40-df642317f3f3 200 in 113ms (next.js: 15ms, application-code: 99ms)
+ POST /api/ext/activate 404 in 227ms (next.js: 56ms, application-code: 171ms)
+ POST /api/ext/auth-token 404 in 226ms (next.js: 71ms, application-code: 155ms)
+ POST /api/ext/activate 404 in 129ms (next.js: 9ms, application-code: 120ms)
+ POST /api/ext/auth-token 404 in 64ms (next.js: 9ms, application-code: 55ms)

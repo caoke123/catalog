@@ -1,0 +1,281 @@
+[Normal] 雨图饰品 产品图册
+[Normal] E-Catalog 前端开发规格文档 v1.0
+[Normal] 技术栈：Next.js 14 + Tailwind CSS + Shadcn UI + Cloudflare Pages
+[Heading 1] 1. 项目概述
+[Normal] 本文档为产品图册（E-Catalog）独立前端项目的完整开发规格，供雨图饰品E-Catalog（图册Next.js）的OpenCode直接执行。
+[Normal] 图册是雨图饰品对外展示产品的数字化门户，运营在PIM系统内创建图册并发布JSON到R2，本项目读取R2数据渲染产品瀑布流，供买家和分销商浏览。
+[Heading 2] 1.1 核心定位
+[List Paragraph] 纯展示，无购买、无登录、无操作按钮
+[List Paragraph] 移动端优先，兼容桌面端
+[List Paragraph] 完全静态，部署到Cloudflare Pages，全球CDN加速
+[List Paragraph] 数据来源：R2公开访问URL下的catalog JSON文件
+[List Paragraph] 图片来源：R2公开访问URL
+[Heading 2] 1.2 技术栈
+[Heading 2] 1.3 项目初始化命令
+[Normal] pnpm create next-app@latest yutu-catalog --typescript --tailwind --app --src-dir --import-alias '@/*'
+[Normal] cd yutu-catalog
+[Normal] pnpm add framer-motion swiper
+[Normal] pnpm add -D @types/node
+[Normal] Shadcn UI初始化：
+[Normal] pnpm dlx shadcn@latest init
+[Normal] pnpm dlx shadcn@latest add sheet badge button skeleton
+[Heading 1] 2. 数据结构规格
+[Heading 2] 2.1 R2 Catalog JSON结构
+[Normal] 文件路径：catalogs/{catalogId}.json，由PIM后端生成并上传到R2，本项目只读取，不写入。
+[Normal] 完整JSON结构：
+[Normal] {
+[Normal] "id": "abc123",
+[Normal] "name": "2026春季新品图册",
+[Normal] "brand": "雨图饰品",
+[Normal] "createdAt": "2026-05-30T00:00:00Z",
+[Normal] "coverImageUrl": "https://r2.yutu.nv315.top/catalogs/abc123/cover.jpg",
+[Normal] "products": [
+[Normal] {
+[Normal] "spuCode": "SP2605024",
+[Normal] "title": "彩色尼龙登山扣钥匙扣 包包挂件",
+[Normal] "category": "包包挂件",
+[Normal] "mainImageUrl": "https://r2.yutu.nv315.top/products/.../主_1.png",
+[Normal] "images": {
+[Normal] "main": [
+[Normal] { "index": 0, "url": "https://r2.yutu.nv315.top/..." }
+[Normal] ]
+[Normal] },
+[Normal] "skus": [
+[Normal] {
+[Normal] "skuCode": "BG-CR-0001",
+[Normal] "nameZh": "黄橙登山扣绳",
+[Normal] "nameEn": "Yellow Orange Rope",
+[Normal] "imageUrl": "https://r2.yutu.nv315.top/..."
+[Normal] }
+[Normal] ]
+[Normal] }
+[Normal] ]
+[Normal] }
+[Normal] ⚠ 产品数据里不包含任何内部数据：无成本价、无利润率、无库存、无内部状态标记
+[Heading 2] 2.2 环境变量
+[Normal] 在项目根目录创建 .env.local：
+[Normal] NEXT_PUBLIC_R2_BASE_URL=https://r2.yutu.nv315.top
+[Normal] NEXT_PUBLIC_CATALOG_PATH=/catalogs
+[Normal] ⚠ NEXT_PUBLIC_前缀使变量在客户端可访问，纯静态项目所有变量都需要此前缀
+[Heading 1] 3. 路由结构
+[Normal] 所有页面集中在 /c/[id] 这一个路由下，封面、产品瀑布流、产品详情都在同一个页面里，通过滚动和Bottom Sheet交互切换，不跳页。
+[Heading 1] 4. 页面设计规格
+[Heading 2] 4.1 整体页面结构（/c/[id]）
+[Normal] 页面从上到下分为四个区域：
+[List Paragraph] 封面区（Hero）：全屏高度，视觉冲击
+[List Paragraph] 分类导航Tab：吸顶，切换产品分类
+[List Paragraph] 产品瀑布流：双列网格，无限滚动
+[List Paragraph] 底部详情（Bottom Sheet）：点击产品弹出，不跳页
+[Heading 2] 4.2 封面区（Hero Section）
+[Normal] 高度：100vh，占满第一屏。
+[Normal] 内容层次：
+[List Paragraph] 背景：coverImageUrl作为全屏背景图，object-fit: cover
+[List Paragraph] 暗色遮罩：rgba(0,0,0,0.35)，让文字清晰可读
+[List Paragraph] 品牌名称：居中大字，白色，字重700，字号2.5rem移动端/4rem桌面端
+[List Paragraph] 图册名称：品牌名下方，白色，较小字号，字重400
+[List Paragraph] 进入按钮：「查看图册 →」，白色描边按钮，点击后平滑滚动到瀑布流区域
+[List Paragraph] 底部渐变：bottom区域有从透明到黑色的渐变，过渡到瀑布流
+[Normal] Framer Motion动效：
+[List Paragraph] 页面加载时，品牌名和按钮从下方淡入（y: 20→0, opacity: 0→1）
+[List Paragraph] 动效时长0.6s，延迟0.2s
+[Heading 2] 4.3 分类导航Tab
+[Normal] 位置：封面区下方，吸顶（sticky top-0），滚动时固定在顶部。
+[Normal] 内容：「全部」+ 按products的category字段自动归类的分类列表。
+[Normal] 样式：横向滚动，每个Tab是胶囊形状，选中状态深色填充，未选中灰色。
+[Normal] 交互：点击Tab时，瀑布流平滑过渡展示对应分类的产品。
+[Normal] 分类自动归类逻辑：
+[Normal] const categories = ['全部', ...new Set(catalog.products.map(p => p.category).filter(Boolean))]
+[Heading 2] 4.4 产品瀑布流
+[Normal] 布局：双列网格，间距8px，移动端优先。
+[Normal] 每张产品卡片显示：
+[List Paragraph] 主图：正方形裁切，object-fit: cover，懒加载（loading='lazy'）
+[List Paragraph] 产品名：主图下方，2行截断，字号0.875rem
+[List Paragraph] SPU编码：产品名下方，灰色小字
+[List Paragraph] SKU数量：如有多个SKU，右上角显示SKU数量角标
+[Normal] 加载策略：
+[List Paragraph] 初始渲染前12个产品
+[List Paragraph] 滚动到底部时加载下一批（每批12个）
+[List Paragraph] 使用IntersectionObserver实现无限滚动
+[List Paragraph] 加载中显示Skeleton占位卡片
+[Heading 2] 4.5 底部详情（Bottom Sheet）
+[Normal] 触发：点击任意产品卡片。
+[Normal] 关闭：下拉Bottom Sheet 或 点击遮罩空白处。
+[Normal] 动效：从底部滑入，Framer Motion animate y: '100%' → 0。
+[Normal] Bottom Sheet内容区域：
+[List Paragraph] 顶部拖拽条：灰色短横线，居中
+[List Paragraph] 图片轮播（Swiper）：
+[List Paragraph] 展示产品所有主图
+[List Paragraph] 分页指示点在右上角（如 1/5）
+[List Paragraph] 支持左右滑动切换
+[List Paragraph] 产品信息区：
+[List Paragraph] SPU编码：灰色小字
+[List Paragraph] 产品名称：大字，字重600
+[List Paragraph] 分类标签：胶囊标签
+[List Paragraph] SKU展示区：
+[List Paragraph] 每个SKU显示：SKU图片（圆形）+ 中文名
+[List Paragraph] 横向滚动排列
+[List Paragraph] 点击SKU图片切换上方Swiper到该SKU图片
+[Normal] ⚠ 底部详情不显示任何价格信息，纯展示
+[Heading 1] 5. 组件结构
+[Heading 1] 6. 数据获取规格
+[Heading 2] 6.1 服务端数据获取（lib/catalog.ts）
+[Normal] 在Next.js服务端获取数据，避免客户端暴露R2路径逻辑：
+[Normal] // lib/catalog.ts
+[Normal] import { CatalogData } from '@/types/catalog'
+[Normal] export async function getCatalog(id: string): Promise<CatalogData | null> {
+[Normal] const r2BaseUrl = process.env.NEXT_PUBLIC_R2_BASE_URL
+[Normal] const url = `${r2BaseUrl}/catalogs/${id}.json`
+[Normal] try {
+[Normal] const res = await fetch(url, {
+[Normal] next: { revalidate: 300 }  // 5分钟缓存
+[Normal] })
+[Normal] if (!res.ok) return null
+[Normal] return res.json()
+[Normal] } catch {
+[Normal] return null
+[Normal] }
+[Normal] }
+[Heading 2] 6.2 page.tsx数据获取
+[Normal] // app/c/[id]/page.tsx
+[Normal] import { notFound } from 'next/navigation'
+[Normal] import { getCatalog } from '@/lib/catalog'
+[Normal] export default async function CatalogPage({ params }: { params: { id: string } }) {
+[Normal] const catalog = await getCatalog(params.id)
+[Normal] if (!catalog) notFound()
+[Normal] return <CatalogView catalog={catalog} />
+[Normal] }
+[Normal] export async function generateMetadata({ params }) {
+[Normal] const catalog = await getCatalog(params.id)
+[Normal] return {
+[Normal] title: catalog?.name ?? '产品图册',
+[Normal] description: `${catalog?.brand} 产品图册`,
+[Normal] }
+[Normal] }
+[Heading 1] 7. TypeScript 类型定义（types/catalog.ts）
+[Normal] export interface CatalogImage {
+[Normal] index: number
+[Normal] url: string
+[Normal] fileName: string
+[Normal] }
+[Normal] export interface CatalogSku {
+[Normal] skuCode: string
+[Normal] nameZh: string
+[Normal] nameEn: string
+[Normal] imageUrl: string
+[Normal] }
+[Normal] export interface CatalogProduct {
+[Normal] spuCode: string
+[Normal] title: string
+[Normal] category: string
+[Normal] mainImageUrl: string
+[Normal] images: { main: CatalogImage[] }
+[Normal] skus: CatalogSku[]
+[Normal] }
+[Normal] export interface CatalogData {
+[Normal] id: string
+[Normal] name: string
+[Normal] brand: string
+[Normal] createdAt: string
+[Normal] coverImageUrl: string
+[Normal] products: CatalogProduct[]
+[Normal] }
+[Heading 1] 8. 关键交互实现规格
+[Heading 2] 8.1 Bottom Sheet动效（Framer Motion）
+[Normal] // components/catalog/ProductSheet.tsx
+[Normal] import { motion, AnimatePresence } from 'framer-motion'
+[Normal] // 遮罩层
+[Normal] <AnimatePresence>
+[Normal] {isOpen && (
+[Normal] <>
+[Normal] <motion.div
+[Normal] className='fixed inset-0 bg-black/50 z-40'
+[Normal] initial={{ opacity: 0 }}
+[Normal] animate={{ opacity: 1 }}
+[Normal] exit={{ opacity: 0 }}
+[Normal] onClick={onClose}
+[Normal] />
+[Normal] <motion.div
+[Normal] className='fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-50'
+[Normal] initial={{ y: '100%' }}
+[Normal] animate={{ y: 0 }}
+[Normal] exit={{ y: '100%' }}
+[Normal] transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+[Normal] drag='y'
+[Normal] dragConstraints={{ top: 0 }}
+[Normal] onDragEnd={(e, info) => {
+[Normal] if (info.offset.y > 100) onClose()
+[Normal] }}
+[Normal] >
+[Normal] {/* 内容 */}
+[Normal] </motion.div>
+[Normal] </>
+[Normal] )}
+[Normal] </AnimatePresence>
+[Heading 2] 8.2 Swiper图片轮播配置
+[Normal] // components/catalog/ProductSwiper.tsx
+[Normal] import { Swiper, SwiperSlide } from 'swiper/react'
+[Normal] import { Pagination } from 'swiper/modules'
+[Normal] import 'swiper/css'
+[Normal] import 'swiper/css/pagination'
+[Normal] <Swiper
+[Normal] modules={[Pagination]}
+[Normal] pagination={{ type: 'fraction' }}  // 显示 1/5 格式
+[Normal] spaceBetween={0}
+[Normal] slidesPerView={1}
+[Normal] onSwiper={setSwiperInstance}
+[Normal] >
+[Normal] {images.map((img, i) => (
+[Normal] <SwiperSlide key={i}>
+[Normal] <img src={img.url} alt='' className='w-full aspect-square object-cover' />
+[Normal] </SwiperSlide>
+[Normal] ))}
+[Normal] </Swiper>
+[Heading 2] 8.3 无限滚动（IntersectionObserver）
+[Normal] // components/catalog/ProductGrid.tsx
+[Normal] const [displayCount, setDisplayCount] = useState(12)
+[Normal] const loaderRef = useRef<HTMLDivElement>(null)
+[Normal] useEffect(() => {
+[Normal] const observer = new IntersectionObserver((entries) => {
+[Normal] if (entries[0].isIntersecting) {
+[Normal] setDisplayCount(prev => Math.min(prev + 12, products.length))
+[Normal] }
+[Normal] }, { threshold: 0.1 })
+[Normal] if (loaderRef.current) observer.observe(loaderRef.current)
+[Normal] return () => observer.disconnect()
+[Normal] }, [products.length])
+[Heading 1] 9. Cloudflare Pages 部署配置
+[Heading 2] 9.1 next.config.ts配置
+[Normal] // next.config.ts
+[Normal] import type { NextConfig } from 'next'
+[Normal] const nextConfig: NextConfig = {
+[Normal] output: 'standalone',  // Cloudflare Pages需要
+[Normal] images: {
+[Normal] remotePatterns: [
+[Normal] {
+[Normal] protocol: 'https',
+[Normal] hostname: 'r2.yutu.nv315.top',  // R2域名
+[Normal] }
+[Normal] ]
+[Normal] }
+[Normal] }
+[Normal] export default nextConfig
+[Heading 2] 9.2 Cloudflare Pages构建配置
+[Heading 2] 9.3 环境变量配置（Cloudflare控制台）
+[Heading 1] 10. 开发任务清单
+[Heading 1] 11. 开发验证步骤
+[Heading 2] 11.1 本地开发验证
+[List Paragraph] 第一步：项目初始化成功，pnpm dev启动无报错
+[List Paragraph] 第二步：访问 http://localhost:3000/c/test-id，返回not-found页面
+[List Paragraph] 第三步：手动创建一个测试catalog JSON，上传到R2的 catalogs/test-id.json
+[List Paragraph] 第四步：访问 http://localhost:3000/c/test-id，封面图和产品列表正常显示
+[List Paragraph] 第五步：点击产品卡片，Bottom Sheet从底部滑出
+[List Paragraph] 第六步：Swiper图片轮播正常，点击SKU切换图片正常
+[List Paragraph] 第七步：分类Tab切换，产品列表正确过滤
+[List Paragraph] 第八步：滚动到底部，无限滚动加载下一批产品
+[Heading 2] 11.2 部署验证
+[List Paragraph] Cloudflare Pages构建成功，无报错
+[List Paragraph] 访问 https://catalog.yutu.nv315.top/c/{真实catalogId}，页面正常
+[List Paragraph] 移动端Chrome DevTools模拟，布局正常
+[List Paragraph] 图片从R2加载，速度正常
+[Normal] 文档版本：v1.0    生成日期：2026-05-31    项目：雨图饰品E-Catalog（图册Next.js）
+[Normal] 本文档供雨图饰品E-Catalog独立开发使用，与PIM系统无代码耦合，唯一联系是读取R2的catalog JSON文件。
