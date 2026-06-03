@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getCatalog } from '@/lib/catalog'
+import { catalogToViewModel } from '@/adapters/catalogAdapter'
 import CatalogView from '@/components/catalog/CatalogView'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
@@ -15,5 +16,7 @@ export default async function CatalogPage({ params }: { params: Promise<{ id: st
   const { id } = await params
   const catalog = await getCatalog(id)
   if (!catalog) notFound()
-  return <CatalogView catalog={catalog} />
+
+  const viewModel = catalogToViewModel(catalog)
+  return <CatalogView viewModel={viewModel} />
 }

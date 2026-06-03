@@ -9,6 +9,8 @@ export interface CatalogSku {
   nameZh: string
   nameEn: string
   imageUrl: string
+  supplyPrice?: number
+  suggestedPrice?: number
 }
 
 export interface CatalogProduct {
@@ -20,6 +22,15 @@ export interface CatalogProduct {
   skus: CatalogSku[]
 }
 
+export interface DistributorInfo {
+  distributorName: string
+  cooperationLevel: string
+  currency: string
+  agreementText?: string
+  validUntil?: string
+  contactManager?: string
+}
+
 export interface CatalogData {
   id: string
   name: string
@@ -27,4 +38,5 @@ export interface CatalogData {
   createdAt: string
   coverImageUrl: string
   products: CatalogProduct[]
+  distributorInfo?: DistributorInfo
 }
