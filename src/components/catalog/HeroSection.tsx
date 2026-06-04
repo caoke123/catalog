@@ -1,5 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
+import { useRef, useEffect } from 'react'
 import { ChevronDown, Calendar, Building2 } from 'lucide-react'
 import { HeroInfo } from '@/adapters/catalogAdapter'
 
@@ -19,9 +20,31 @@ function formatDate(iso: string): string {
 
 export default function HeroSection({ hero, onEnter, showCustomerName }: HeroSectionProps) {
   const formattedDate = formatDate(hero.createdAt)
+  const touchStartY = useRef(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY
+    }
+    const onTouchEnd = (e: TouchEvent) => {
+      const dy = e.changedTouches[0].clientY - touchStartY.current
+      if (dy < -50) onEnter()
+    }
+
+    el.addEventListener('touchstart', onTouchStart, { passive: true })
+    el.addEventListener('touchend', onTouchEnd, { passive: true })
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [onEnter])
 
   return (
-    <div className="relative h-screen w-full overflow-hidden flex flex-col justify-between select-none">
+    <div ref={containerRef} className="relative h-screen w-full overflow-hidden flex flex-col justify-between select-none">
       <div className="absolute inset-0 z-0 overflow-hidden">
         {hero.coverImageUrl ? (
           <motion.img src={hero.coverImageUrl} alt={hero.name} className="w-full h-full object-cover scale-110 filter brightness-90 saturate-105" referrerPolicy="no-referrer" />

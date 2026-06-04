@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { Search, Sparkles, FilterX } from 'lucide-react'
+import { Sparkles, FilterX } from 'lucide-react'
 import { ProductInfo, FeatureFlags } from '@/adapters/catalogAdapter'
 import ProductCard from './ProductCard'
 
@@ -23,20 +23,17 @@ const cardItemVariants = {
 } as const
 
 export default function ProductGrid({ products, activeCategory, onProductClick, features }: ProductGridProps) {
-  const [searchQuery, setSearchQuery] = useState('')
   const [displayCount, setDisplayCount] = useState(12)
   const loaderRef = useRef<HTMLDivElement>(null)
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const matchCategory = activeCategory === '全部' || p.category === activeCategory
-      const matchSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          p.spuCode.toLowerCase().includes(searchQuery.toLowerCase())
-      return matchCategory && matchSearch
+      return matchCategory
     })
-  }, [products, activeCategory, searchQuery])
+  }, [products, activeCategory])
 
-  useEffect(() => { setDisplayCount(12) }, [activeCategory, searchQuery])
+  useEffect(() => { setDisplayCount(12) }, [activeCategory])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -52,17 +49,6 @@ export default function ProductGrid({ products, activeCategory, onProductClick, 
 
   return (
     <div id="catalog-section" className="space-y-6 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 scroll-mt-20">
-      <div className="relative max-w-md mx-auto w-full">
-        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-          <Search className="w-4 h-4 text-zinc-400" />
-        </div>
-        <input
-          type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="搜索产品名称或编码..."
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-zinc-200 rounded-xl text-sm text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all"
-        />
-      </div>
-
       {filteredProducts.length > 0 ? (
         <motion.div variants={gridContainerVariants} initial="hidden" animate="show" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {paginatedProducts.map((p) => (

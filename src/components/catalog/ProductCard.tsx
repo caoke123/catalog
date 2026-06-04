@@ -45,25 +45,14 @@ export default function ProductCard({ product, onClick, features }: ProductCardP
 
           {showPrice && minSupplyPrice !== null && (
             <div className="py-1.5 px-2 bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/15 rounded-xl flex items-center justify-between text-xs select-none">
-              <div className="flex flex-col text-left">
-                <span className="text-[8px] text-amber-800 font-bold uppercase leading-none tracking-widest">代发供货价</span>
-                <span className="text-amber-600 font-mono font-extrabold text-[13px] sm:text-sm mt-0.5">¥{minSupplyPrice.toFixed(2)}<span className="text-[9px] font-sans text-zinc-400 font-normal ml-0.5">起</span></span>
-              </div>
-              {minRetailPrice !== null && (
-                <div className="text-right flex flex-col">
-                  <span className="text-[8px] text-zinc-400 font-bold uppercase leading-none tracking-wider">零售指导价</span>
-                  <span className="text-zinc-400 font-mono text-[11px] sm:text-xs font-semibold mt-0.5">¥{minRetailPrice.toFixed(0)}</span>
-                </div>
-              )}
+              <span className="text-[8px] text-amber-800 font-bold uppercase leading-none tracking-widest shrink-0">代发批发价</span>
+              <span className="text-amber-600 font-mono font-extrabold text-[13px] sm:text-sm leading-none">¥{minSupplyPrice.toFixed(2)}<span className="text-[9px] font-sans text-zinc-400 font-normal ml-0.5">起</span></span>
             </div>
           )}
         </div>
 
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-zinc-100/60 font-sans text-[10px] text-zinc-400">
           <span className="bg-zinc-50 border border-zinc-100 rounded px-1.5 py-0.5 tracking-wider uppercase font-medium">{product.category || '精品配饰'}</span>
-          {showPrice && minSupplyPrice !== null && (
-            <span className="font-mono font-extrabold text-amber-600 text-[12px] sm:text-[13px] tracking-tight">¥{minSupplyPrice.toFixed(2)}</span>
-          )}
         </div>
       </div>
     </motion.div>

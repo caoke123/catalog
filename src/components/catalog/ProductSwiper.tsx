@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
+import { useRef, useEffect } from 'react'
 import { ImageInfo } from '@/adapters/catalogAdapter'
 
 interface ProductSwiperProps {
@@ -12,6 +13,14 @@ interface ProductSwiperProps {
 }
 
 export default function ProductSwiper({ images, currentIndex, onIndexChange }: ProductSwiperProps) {
+  const swiperRef = useRef<any>(null)
+
+  useEffect(() => {
+    if (swiperRef.current && swiperRef.current.activeIndex !== currentIndex) {
+      swiperRef.current.slideTo(currentIndex)
+    }
+  }, [currentIndex])
+
   if (!images || images.length === 0) {
     return (
       <div className="w-full aspect-square bg-zinc-100 rounded-2xl flex items-center justify-center text-zinc-400 text-xs">
@@ -21,14 +30,15 @@ export default function ProductSwiper({ images, currentIndex, onIndexChange }: P
   }
 
   return (
-    <div className="w-full aspect-square bg-zinc-50 rounded-2xl overflow-hidden shadow-inner relative">
+    <div className="w-full aspect-square bg-zinc-50 rounded-2xl overflow-hidden shadow-inner relative touch-pan-x">
       <Swiper
         modules={[Pagination]}
         pagination={{ type: 'fraction' }}
         spaceBetween={0}
         slidesPerView={1}
         initialSlide={currentIndex}
-        onSlideChange={(swiper) => onIndexChange(swiper.activeIndex)}
+          onSwiper={(swiper) => { swiperRef.current = swiper }}
+          onSlideChange={(swiper) => onIndexChange(swiper.activeIndex)}
         className="w-full h-full"
       >
         {images.map((img, i) => (

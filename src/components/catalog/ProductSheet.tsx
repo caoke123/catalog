@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Sparkles, ShieldCheck, Sliders } from 'lucide-react'
 import { ProductInfo, SkuInfo, FeatureFlags } from '@/adapters/catalogAdapter'
@@ -16,6 +16,34 @@ export default function ProductSheet({ product, onClose, features }: ProductShee
   const [selectedSku, setSelectedSku] = useState<SkuInfo | null>(null)
   const [swiperIndex, setSwiperIndex] = useState(0)
   const showPrice = features?.showPrice ?? false
+  const sheetRef = useRef<HTMLDivElement>(null)
+  const dragStartY = useRef(0)
+  const dragStartX = useRef(0)
+
+  useEffect(() => {
+    const sheet = sheetRef.current
+    if (!sheet) return
+
+    const onTouchStart = (e: TouchEvent) => {
+      dragStartY.current = e.touches[0].clientY
+      dragStartX.current = e.touches[0].clientX
+    }
+    const onTouchEnd = (e: TouchEvent) => {
+      const target = e.target as HTMLElement
+      if (target.closest('[data-no-drag]')) return
+      const dy = e.changedTouches[0].clientY - dragStartY.current
+      const dx = e.changedTouches[0].clientX - dragStartX.current
+      const isVertical = Math.abs(dy) > Math.abs(dx)
+      if (isVertical && dy > 80) onClose()
+    }
+
+    sheet.addEventListener('touchstart', onTouchStart, { passive: true })
+    sheet.addEventListener('touchend', onTouchEnd, { passive: true })
+    return () => {
+      sheet.removeEventListener('touchstart', onTouchStart)
+      sheet.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [product, onClose])
 
   useEffect(() => { if (product) { setSelectedSku(null); setSwiperIndex(0) } }, [product])
   useEffect(() => {
@@ -43,26 +71,26 @@ export default function ProductSheet({ product, onClose, features }: ProductShee
 
   const activePricing = selectedSku?.pricing ?? (product?.skus[0]?.pricing ?? null)
 
-  if (!product) return null
-
   return (
     <AnimatePresence>
       {!!product && (
         <>
           <motion.div className="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm z-50 pointer-events-auto" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} onClick={onClose} />
-          <motion.div className="fixed bottom-0 left-0 right-0 max-w-2xl mx-auto bg-white rounded-t-[32px] border-t border-zinc-100 z-50 overflow-hidden shadow-2xl flex flex-col pointer-events-auto" style={{ maxHeight: '90vh' }} initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 32, stiffness: 220 }} drag="y" dragConstraints={{ top: 0 }} dragElastic={0.35} onDragEnd={(_e, info) => { if (info.offset.y > 110) onClose() }}>
-            <div className="w-full flex justify-center py-4 bg-zinc-50 border-b border-zinc-100 select-none cursor-grab active:cursor-grabbing shrink-0 touch-none">
+          <motion.div ref={sheetRef} className="fixed bottom-0 left-0 right-0 max-w-2xl mx-auto bg-white rounded-t-[32px] border-t border-zinc-100 z-50 overflow-hidden shadow-2xl flex flex-col pointer-events-auto" style={{ maxHeight: '90vh' }} initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 32, stiffness: 220 }}>
+            <div data-drag-handle className="w-full flex justify-center py-4 bg-zinc-50 border-b border-zinc-100 select-none cursor-grab active:cursor-grabbing shrink-0 touch-none">
               <div className="w-12 h-1.5 bg-zinc-300 rounded-full" />
             </div>
             <div className="overflow-y-auto p-5 sm:p-6 space-y-6 scrollbar-none pb-12 flex-1">
               <div className="w-full relative">
-                <ProductSwiper images={carouselImages} currentIndex={swiperIndex} onIndexChange={setSwiperIndex} />
+                <div data-no-drag>
+                  <ProductSwiper images={carouselImages} currentIndex={swiperIndex} onIndexChange={setSwiperIndex} />
+                </div>
                 <button onClick={onClose} className="absolute top-4 left-4 bg-zinc-950/75 backdrop-blur-md text-white hover:text-rose-400 w-8 h-8 rounded-full flex items-center justify-center border border-white/10 shadow-lg cursor-pointer transform hover:scale-105 active:scale-95 transition-all z-20"><X className="w-4 h-4" /></button>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="bg-amber-100 text-amber-800 text-[9px] font-mono font-bold tracking-widest px-2.5 py-0.8 rounded-full border border-amber-200 uppercase flex items-center gap-1 leading-none"><Sparkles className="w-2.5 h-2.5 animate-spin-slow" /><span>{product.category || '流行首饰'}</span></span>
+                  <span className="bg-amber-100 text-amber-800 text-[9px] font-mono font-bold tracking-widest px-2.5 py-0.8 rounded-full border border-amber-200 uppercase flex items-center gap-1 leading-none"><span>{product.category || '流行首饰'}</span></span>
                   <span className="bg-zinc-100 text-zinc-500 font-mono text-[9px] font-medium tracking-wider px-2 py-0.5 rounded leading-none">{product.spuCode}</span>
                 </div>
                 <h1 className="text-lg sm:text-xl font-extrabold text-zinc-900 tracking-wide font-sans leading-snug">{product.title}</h1>
