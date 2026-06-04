@@ -1,11 +1,10 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  output: undefined,
-
-  allowedDevOrigins: ['192.168.31.225'],
+  output: 'export',
 
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -13,24 +12,6 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-  },
-
-  // Cache-Control for R2 JSON responses
-  async headers() {
-    return [
-      {
-        source: '/c/:id',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' },
-        ],
-      },
-      {
-        source: '/distributions/:id',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' },
-        ],
-      },
-    ]
   },
 }
 
