@@ -1,0 +1,136 @@
+
+> yutu-catalog@0.1.0 dev E:\缃戠珯寮€鍙慭E-Catalog\yutu-catalog
+> next dev -p 3010
+
+鈻?Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3010
+- Network:       http://192.168.31.225:3010
+- Environments: .env.local
+鉁?Ready in 690ms
+
+[distribution] fetching: https://yutu.nv315.top/distributions/3524e1f6-.json
+[distribution] fetching: https://yutu.nv315.top/distributions/3524e1f6-.json
+鈿?Blocked cross-origin request to Next.js dev resource /_next/webpack-hmr from "192.168.31.225".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['192.168.31.225'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[distribution] response status: 404 ok: false
+[distribution] response status: 404 ok: false
+ GET /distributions/3524e1f6- 404 in 2.4s (next.js: 1135ms, application-code: 1274ms)
+ POST /api/ext/activate 404 in 146ms (next.js: 48ms, application-code: 97ms)
+ POST /api/ext/auth-token 404 in 41ms (next.js: 7ms, application-code: 34ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/6e230750-b707-4946-8a40-df642317f3f3.json
+[distribution] fetching: https://yutu.nv315.top/distributions/6e230750-b707-4946-8a40-df642317f3f3.json
+[distribution] fetching: https://yutu.nv315.top/distributions/6e230750-b707-4946-8a40-df642317f3f3.json
+[distribution] fetching: https://yutu.nv315.top/distributions/6e230750-b707-4946-8a40-df642317f3f3.json
+[distribution] response status: 404 ok: false
+ GET /c/6e230750-b707-4946-8a40-df642317f3f3 200 in 923ms (next.js: 755ms, application-code: 168ms)
+[distribution] response status: 404 ok: false
+[distribution] response status: 404 ok: false
+ GET /distributions/6e230750-b707-4946-8a40-df642317f3f3 404 in 1317ms (next.js: 37ms, application-code: 1280ms)
+[distribution] response status: 404 ok: false
+ GET /distributions/6e230750-b707-4946-8a40-df642317f3f3 404 in 1333ms (next.js: 15ms, application-code: 1317ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 98ms (next.js: 16ms, application-code: 82ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/6e230750-b707-4946-8a40-df642317f3f3.json
+[distribution] fetching: https://yutu.nv315.top/distributions/6e230750-b707-4946-8a40-df642317f3f3.json
+[distribution] response status: 404 ok: false
+[distribution] response status: 404 ok: false
+ GET /distributions/6e230750-b707-4946-8a40-df642317f3f3 404 in 1174ms (next.js: 13ms, application-code: 1161ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 77ms (next.js: 14ms, application-code: 62ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 77ms (next.js: 15ms, application-code: 62ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 73ms (next.js: 15ms, application-code: 58ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 84ms (next.js: 13ms, application-code: 70ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 77ms (next.js: 16ms, application-code: 61ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 79ms (next.js: 13ms, application-code: 66ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 83ms (next.js: 17ms, application-code: 66ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 74ms (next.js: 12ms, application-code: 62ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 84ms (next.js: 14ms, application-code: 70ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 75ms (next.js: 14ms, application-code: 61ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 76ms (next.js: 14ms, application-code: 62ms)
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+[distribution] fetching: https://yutu.nv315.top/distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff.json
+[distribution] response status: 200 ok: true
+[distribution] products.length: 3
+ GET /distributions/93d0227e-2de7-4e38-91f5-0f5a256008ff 200 in 73ms (next.js: 13ms, application-code: 60ms)
+鈥塃LIFECYCLE鈥?Command failed with exit code 3221225786.

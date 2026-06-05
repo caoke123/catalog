@@ -1,0 +1,24 @@
+
+> yutu-catalog@0.1.0 dev E:\缃戠珯寮€鍙慭E-Catalog\yutu-catalog
+> next dev -p 3010
+
+鈻?Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3010
+- Network:       http://192.168.31.225:3010
+- Environments: .env.local
+鉁?Ready in 680ms
+
+[getCatalog] fetching: https://yutu.nv315.top/catalogs/6e230750-b707-4946-8a40-df642317f3f3.json
+[getCatalog] fetching: https://yutu.nv315.top/catalogs/6e230750-b707-4946-8a40-df642317f3f3.json
+[getCatalog] status: 200 true
+[getCatalog] status: 200 true
+[getCatalog] success, products: 5
+[getCatalog] success, products: 5
+ GET /c/6e230750-b707-4946-8a40-df642317f3f3 200 in 1216ms (next.js: 856ms, application-code: 361ms)
+[getCatalog] fetching: https://yutu.nv315.top/catalogs/6e230750-b707-4946-8a40-df642317f3f3.json
+[getCatalog] status: 200 true
+[getCatalog] success, products: 5
+[getCatalog] fetching: https://yutu.nv315.top/catalogs/6e230750-b707-4946-8a40-df642317f3f3.json
+[getCatalog] status: 200 true
+[getCatalog] success, products: 5
+ GET /c/6e230750-b707-4946-8a40-df642317f3f3 200 in 92ms (next.js: 16ms, application-code: 77ms)
