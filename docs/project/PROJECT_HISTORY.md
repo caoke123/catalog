@@ -34,3 +34,9 @@
 - 修复 Google Fonts 网络不可达问题，改用系统字体
 - 处理 coverImageUrl 为空的情况
 - 配置 3010 端口开发服务器
+
+### UI 迁移准备（catalog → yutu-catalog）
+- 完成 catalog 项目 UI 审计
+- 制定组件映射方案和迁移计划
+- 建立安全边界文档（DO_NOT_TOUCH.md）
+- 设计数据适配器层（catalogAdapter）
